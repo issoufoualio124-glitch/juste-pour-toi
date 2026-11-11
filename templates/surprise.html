@@ -1,0 +1,65 @@
+
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Une surprise pour toi ❤️</title>
+<style>
+*{box-sizing:border-box}
+body{
+ margin:0;min-height:100vh;
+ display:flex;align-items:center;justify-content:center;
+ padding:20px;
+ font-family:Arial,sans-serif;
+ color:white;text-align:center;
+ background:linear-gradient(145deg,#180d32,#512052,#17152e);
+ overflow-x:hidden;
+}
+.card{
+ width:100%;max-width:430px;
+ padding:30px 22px;
+ border:1px solid #ffffff35;
+ border-radius:25px;
+ background:#ffffff12;
+ box-shadow:0 15px 50px #0005;
+}
+h1{color:#ffafd5}
+.heart{font-size:65px;animation:pulse 1.5s infinite}
+button{
+ padding:15px 25px;border:0;border-radius:30px;
+ background:#ed75ad;color:white;
+ font-size:17px;font-weight:bold;
+ cursor:pointer;
+}
+#letter{display:none;line-height:1.8;margin-top:25px}
+.small{color:#e8cce9}
+@keyframes pulse{
+ 50%{transform:scale(1.15)}
+}
+</style>
+</head>
+<body>
+<div class="card">
+ <div class="heart">💗</div>
+ <h1>Une surprise pour {{ surprise['name'] }}</h1>
+ <p class="small">Quelqu'un a préparé quelque chose pour toi...</p>
+
+ <button onclick="openLetter()">Ouvrir ma surprise 💌</button>
+
+ <div id="letter">
+   <h2>Juste pour toi ❤️</h2>
+   <p>{{ surprise['message'] }}</p>
+   <div style="font-size:30px">💖 ✨ 💖</div>
+ </div>
+</div>
+
+<script>
+function openLetter(){
+ document.getElementById("letter").style.display="block";
+ document.querySelector("button").style.display="none";
+}
+</script>
+</body>
+</html>
+
