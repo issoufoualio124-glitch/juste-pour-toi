@@ -1,56 +1,49 @@
-
 <!DOCTYPE html>
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Juste pour toi ❤️</title>
+<title>JUSTE POUR TOI ❤️</title>
 <style>
 *{box-sizing:border-box}
 body{
  margin:0;padding:20px;
+ min-height:100vh;
  font-family:Arial,sans-serif;
  background:linear-gradient(145deg,#160d2b,#351344,#17152f);
  color:white;
 }
-.container{max-width:650px;margin:auto}
-header{text-align:center;padding:25px 5px}
-.heart{font-size:48px}
-h1{color:#ff9bc9;margin:8px}
+.container{max-width:600px;margin:auto}
+header{text-align:center;padding:35px 5px}
+.heart{font-size:55px}
+h1{color:#ff9bc9;margin:10px}
 .subtitle{color:#d9c4e8}
 .card{
  background:#ffffff12;
  border:1px solid #ffffff25;
  border-radius:18px;
- padding:20px;margin:18px 0;
+ padding:22px;margin:18px 0;
 }
-h2{color:#ffafd5;font-size:19px}
-input,select,textarea{
- width:100%;padding:13px;margin:8px 0 15px;
+h2{color:#ffafd5;font-size:20px}
+input,textarea{
+ width:100%;padding:14px;margin:9px 0 18px;
  border:1px solid #ffffff30;
  border-radius:10px;
  background:#211631;color:white;
- font-size:15px;
+ font-size:16px;
 }
-option{background:#211631}
 label{font-size:14px;color:#eaddec}
 button{
- border:0;border-radius:10px;
- padding:13px;background:#e65b9b;
- color:white;font-weight:bold;
+ width:100%;border:0;border-radius:10px;
+ padding:15px;background:#e65b9b;
+ color:white;font-weight:bold;font-size:16px;
  cursor:pointer;
 }
-.submit{width:100%;font-size:16px}
-.recipient{
- background:#ffffff10;padding:15px;
- border-radius:12px;margin:12px 0;
+.flash{
+ background:#493052;padding:13px;
+ border-radius:10px;overflow-wrap:anywhere;
 }
-.small{font-size:13px;color:#d9c4e8}
-.status{color:#8ff0bd}
-.paused{color:#ffbd85}
-.flash{background:#493052;padding:12px;border-radius:10px}
-.consent{display:flex;gap:10px;align-items:center;margin:10px 0 18px}
-.consent input{width:auto;margin:0}
+.footer{text-align:center;color:#d9c4e8;font-size:13px}
 </style>
 </head>
 <body>
@@ -59,7 +52,9 @@ button{
 <header>
  <div class="heart">💗</div>
  <h1>JUSTE POUR TOI</h1>
- <p class="subtitle">Chaque attention mérite une surprise.</p>
+ <p class="subtitle">
+ Chaque attention mérite une surprise.
+ </p>
 </header>
 
 {% with messages = get_flashed_messages() %}
@@ -69,95 +64,47 @@ button{
 {% endwith %}
 
 <div class="card">
-<h2>✨ Nouvelle surprise</h2>
+ <h2>💌 Créer une surprise</h2>
 
-<form method="POST">
-<label>Prénom du destinataire</label>
-<input name="name" placeholder="Ex : Amina" required>
+ <form method="POST" action="/create-surprise">
+  <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
 
-<label>Numéro de téléphone</label>
-<input name="phone" type="tel" placeholder="+227..." required>
+  <label>Prénom du destinataire</label>
+  <input
+   name="surprise_name"
+   placeholder="Ex : Amina"
+   maxlength="60"
+   required
+  >
 
-<label>Canal d'envoi</label>
-<select name="channel" required>
- <option value="whatsapp">WhatsApp</option>
- <option value="sms">SMS</option>
- <option value="both">WhatsApp + SMS</option>
-</select>
+  <label>Ton message secret</label>
+  <textarea
+   name="surprise_message"
+   rows="6"
+   placeholder="Écris ton message personnalisé..."
+   maxlength="2000"
+   required
+  ></textarea>
 
-<label>Fréquence des messages</label>
-<select name="mode" required>
- <option value="daily">Chaque jour</option>
- <option value="once">Une seule fois</option>
-</select>
+  <label>Texte autour du cœur (facultatif)</label>
+  <textarea
+   name="orbit_text"
+   rows="3"
+   placeholder="Ex : Tu es ma plus belle histoire..."
+   maxlength="300"
+  ></textarea>
 
-<label>Date et heure de l'envoi</label>
-<input name="schedule" type="datetime-local" required>
+  <button type="submit">
+   ✨ Générer mon lien surprise
+  </button>
 
-<label>Message à envoyer</label>
-<textarea name="message" rows="4"
-placeholder="Écris ton message surprise..." required></textarea>
-
-<div class="consent">
-<input type="checkbox" name="consent" required>
-<label>Le destinataire a accepté de recevoir ces messages.</label>
+ </form>
 </div>
 
-<button class="submit" type="submit">
-💌 Ajouter la surprise
-</button>
-</form>
-</div>
-
-
-<div class="card">
-<h2>💌 Créer un lien surprise</h2>
-<form method="POST" action="/create-surprise">
-<label>Prénom du destinataire</label>
-<input name="surprise_name" placeholder="Ex : Ramatou" required maxlength="60">
-
-<label>Message secret</label>
-<textarea name="surprise_message" rows="5"
-placeholder="Écris ton message personnalisé..." required maxlength="2000"></textarea>
-
-<button class="submit" type="submit">✨ Générer mon lien</button>
-</form>
-</div>
-
-<div class="card">
-<h2>💝 Mes destinataires</h2>
-
-{% for r in recipients %}
-<div class="recipient">
-<strong>{{ r['name'] }}</strong>
-<p class="small">{{ r['phone'] }}</p>
-<p class="small">
-Canal : {{ r['channel'] }} |
-Mode : {{ r['mode'] }}
-</p>
-<p class="small">Programmation : {{ r['schedule'] }}</p>
-<p>{{ r['message'] }}</p>
-
-<p class="{{ 'status' if r['active'] else 'paused' }}">
-{{ '● Activé' if r['active'] else '● Suspendu' }}
-</p>
-
-<form method="POST" action="/toggle/{{ r['id'] }}">
-<button type="submit">
-{{ 'Suspendre' if r['active'] else 'Réactiver' }}
-</button>
-</form>
-</div>
-{% else %}
-<p class="subtitle">Aucun destinataire pour le moment.</p>
-{% endfor %}
-</div>
-
-<p class="subtitle" style="text-align:center">
-JUSTE POUR TOI ❤️ — Créé avec attention.
+<p class="footer">
+ JUSTE POUR TOI ❤️ — Créé avec attention.
 </p>
 
 </div>
 </body>
 </html>
-
