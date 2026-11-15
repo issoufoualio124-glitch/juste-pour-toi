@@ -1,65 +1,239 @@
-
 <!DOCTYPE html>
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Une surprise pour toi ❤️</title>
+
 <style>
 *{box-sizing:border-box}
+
 body{
- margin:0;min-height:100vh;
- display:flex;align-items:center;justify-content:center;
- padding:20px;
+ margin:0;
+ min-height:100vh;
+ display:flex;
+ align-items:center;
+ justify-content:center;
+ padding:18px;
  font-family:Arial,sans-serif;
- color:white;text-align:center;
+ color:white;
+ text-align:center;
  background:linear-gradient(145deg,#180d32,#512052,#17152e);
  overflow-x:hidden;
 }
+
 .card{
- width:100%;max-width:430px;
- padding:30px 22px;
+ width:100%;
+ max-width:430px;
+ padding:25px 15px;
  border:1px solid #ffffff35;
  border-radius:25px;
  background:#ffffff12;
  box-shadow:0 15px 50px #0005;
 }
-h1{color:#ffafd5}
-.heart{font-size:65px;animation:pulse 1.5s infinite}
-button{
- padding:15px 25px;border:0;border-radius:30px;
- background:#ed75ad;color:white;
- font-size:17px;font-weight:bold;
+
+#openButton{
+ padding:17px 28px;
+ border:0;
+ border-radius:35px;
+ background:#ed75ad;
+ color:white;
+ font-size:19px;
+ font-weight:bold;
  cursor:pointer;
+ box-shadow:0 0 18px #ff75bd80;
 }
-#letter{display:none;line-height:1.8;margin-top:25px}
-.small{color:#e8cce9}
+
+#surpriseContent{display:none}
+
+.heart-stage{
+ width:340px;
+ max-width:100%;
+ height:340px;
+ margin:0 auto 20px;
+ position:relative;
+}
+
+.heart{
+ position:absolute;
+ left:50%;
+ top:50%;
+ transform:translate(-50%,-50%);
+ font-size:65px;
+ z-index:2;
+ animation:pulse 1.5s infinite;
+}
+
+.orbit{
+ position:absolute;
+ width:220px;
+ height:220px;
+ left:50%;
+ top:50%;
+ transform:translate(-50%,-50%);
+ animation:rotateOrbit 35s linear infinite;
+}
+
+.love-flash{
+ position:fixed;
+ inset:0;
+ z-index:10;
+ display:flex;
+ align-items:center;
+ justify-content:center;
+ padding:20px;
+ pointer-events:none;
+ color:#fff0f8;
+ font-family:Georgia,serif;
+ font-size:clamp(28px,8vw,48px);
+ font-weight:bold;
+ text-align:center;
+ text-shadow:0 0 12px #ff75bd,0 0 30px #ff2d9b;
+ opacity:0;
+ animation:loveBlink 1s ease-in-out infinite;
+}
+
+@keyframes loveBlink{
+ 0%,100%{opacity:0;transform:scale(.85)}
+ 15%,65%{opacity:1;transform:scale(1)}
+}
+
+.orbit-block{
+ position:absolute;
+ z-index:4;
+ width:90px;
+ min-height:65px;
+ padding:9px 6px;
+ display:flex;
+ align-items:center;
+ justify-content:center;
+ border:1px solid #ffc3df;
+ border-radius:13px;
+ background:linear-gradient(135deg,#7c2864,#351747);
+ color:#fff0f8;
+ font-size:10px;
+ font-weight:bold;
+ line-height:1.4;
+ overflow-wrap:anywhere;
+ box-shadow:0 0 10px #ff8bc9,0 0 22px #ff5eae;
+ animation:glow 2s ease-in-out infinite alternate;
+}
+
+.block-one{top:0;left:0}
+.block-two{right:0;bottom:0}
+
+@keyframes glow{
+ from{box-shadow:0 0 7px #ff8bc9}
+ to{box-shadow:0 0 12px #ff8bc9,0 0 28px #ff5eae}
+}
+
 @keyframes pulse{
- 50%{transform:scale(1.15)}
+ 50%{scale:1.15}
+}
+
+@keyframes rotateOrbit{
+ from{rotate:0deg}
+ to{rotate:360deg}
+}
+
+#letter{
+ line-height:1.6;
+ margin-top:15px;
+}
+
+#letter h2{
+ color:#ffafd5;
+ font-size:27px;
+}
+
+.final-message{
+ margin:25px 5px;
+ color:#fff0f8;
+ font-family:Georgia,serif;
+ font-size:30px;
+ font-weight:bold;
+ line-height:1.5;
+ text-shadow:0 0 12px #ff75bd;
+ overflow-wrap:anywhere;
+}
+
+.decorations{
+ font-size:32px;
+ margin-top:20px;
+}
+
+@media(max-width:350px){
+ .heart-stage{
+  width:300px;
+  height:310px;
+ }
+ .orbit{
+  width:190px;
+  height:190px;
+ }
+ .orbit-block{
+  width:82px;
+  font-size:9px;
+ }
+ .final-message{font-size:25px}
 }
 </style>
 </head>
+
 <body>
 <div class="card">
- <div class="heart">💗</div>
- <h1>Une surprise pour {{ surprise['name'] }}</h1>
- <p class="small">Quelqu'un a préparé quelque chose pour toi...</p>
 
- <button onclick="openLetter()">Ouvrir ma surprise 💌</button>
+ <button id="openButton" onclick="openLetter()">
+  Ouvrir ma surprise 💌
+ </button>
 
- <div id="letter">
+ <div id="surpriseContent">
+
+  <div class="heart-stage">
+
+   <div class="love-flash">
+    JE T'AIME {{ surprise['name']|upper }} ♥
+   </div>
+
+   {% if surprise['orbit_text'] %}
+   <div class="orbit-block block-one" id="blockOne"></div>
+   <div class="orbit-block block-two" id="blockTwo"></div>
+   {% endif %}
+
+   <div class="heart">💗</div>
+  </div>
+
+  <div id="letter">
    <h2>Juste pour toi ❤️</h2>
-   <p>{{ surprise['message'] }}</p>
-   <div style="font-size:30px">💖 ✨ 💖</div>
+
+   <p class="final-message">
+    {{ surprise['message'] }}
+   </p>
+
+   <div class="decorations">💖 ✨ 💖</div>
+  </div>
+
  </div>
 </div>
 
 <script>
+{% if surprise['orbit_text'] %}
+const texteOrbit = {{ surprise['orbit_text']|tojson }};
+const motsOrbit = texteOrbit.trim().split(/\s+/);
+const milieuOrbit = Math.ceil(motsOrbit.length / 2);
+
+document.getElementById("blockOne").textContent =
+ motsOrbit.slice(0, milieuOrbit).join(" ");
+
+document.getElementById("blockTwo").textContent =
+ motsOrbit.slice(milieuOrbit).join(" ");
+{% endif %}
+
 function openLetter(){
- document.getElementById("letter").style.display="block";
- document.querySelector("button").style.display="none";
+ document.getElementById("openButton").style.display="none";
+ document.getElementById("surpriseContent").style.display="block";
 }
 </script>
+
 </body>
 </html>
-
