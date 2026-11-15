@@ -10,7 +10,7 @@ on:
       - ".github/workflows/android.yml"
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
   build:
@@ -43,3 +43,11 @@ jobs:
           path: android/app/build/outputs/apk/debug/app-debug.apk
           if-no-files-found: error
           retention-days: 30
+
+      - name: Publier la version APK sur GitHub
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: apk-v1
+          name: JUSTE POUR TOI - Version 1
+          files: android/app/build/outputs/apk/debug/app-debug.apk
+          overwrite_files: true
